@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#FCF9F0"/>
+  <!-- 远山 -->
+  <path d="M0 470 Q160 400 330 455 T800 440 V600 H0 Z" fill="#E4EBD8"/>
+  <path d="M0 510 Q220 460 420 505 T800 495 V600 H0 Z" fill="#D3E0C2"/>
+  <!-- 初阳 -->
+  <circle cx="630" cy="150" r="62" fill="#EFCB8F"/>
+  <!-- 柳枝 -->
+  <g stroke="#7A9E5F" stroke-width="6" fill="none" stroke-linecap="round">
+    <path d="M120 0 C110 90 130 180 105 300"/>
+    <path d="M170 0 C168 80 185 170 160 320"/>
+    <path d="M220 0 C225 70 240 150 215 270"/>
+  </g>
+  <g fill="#8FB36F">
+    <ellipse cx="105" cy="120" rx="10" ry="26" transform="rotate(18 105 120)"/>
+    <ellipse cx="122" cy="200" rx="9" ry="24" transform="rotate(-8 122 200)"/>
+    <ellipse cx="98" cy="270" rx="9" ry="22" transform="rotate(14 98 270)"/>
+    <ellipse cx="172" cy="140" rx="10" ry="26" transform="rotate(-12 172 140)"/>
+    <ellipse cx="158" cy="240" rx="9" ry="24" transform="rotate(10 158 240)"/>
+    <ellipse cx="168" cy="310" rx="8" ry="20" transform="rotate(-6 168 310)"/>
+    <ellipse cx="228" cy="110" rx="9" ry="24" transform="rotate(12 228 110)"/>
+    <ellipse cx="212" cy="210" rx="9" ry="22" transform="rotate(-10 212 210)"/>
+  </g>
+  <!-- 燕子 -->
+  <g fill="#4A5468">
+    <path d="M420 200 q22 -26 44 0 q-22 -10 -44 0 Z"/>
+    <path d="M442 200 q26 -8 40 14 q-20 -2 -40 -14 Z"/>
+    <path d="M540 130 q18 -22 37 0 q-19 -8 -37 0 Z"/>
+    <path d="M559 130 q22 -7 33 12 q-17 -2 -33 -12 Z"/>
+  </g>
+  <!-- 新芽 -->
+  <g>
+    <rect x="386" y="470" width="7" height="56" rx="3" fill="#7A9E5F"/>
+    <path d="M390 480 q-38 -8 -46 -40 q34 4 46 40 Z" fill="#8FB36F"/>
+    <path d="M390 492 q38 -10 44 -42 q-32 6 -44 42 Z" fill="#A5C48A"/>
+  </g>
+  <!-- 地面草点 -->
+  <g fill="#B9CDA0">
+    <circle cx="140" cy="545" r="7"/><circle cx="260" cy="560" r="6"/>
+    <circle cx="520" cy="550" r="7"/><circle cx="660" cy="565" r="6"/>
+    <circle cx="730" cy="540" r="5"/>
+  </g>
+</svg>

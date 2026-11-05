@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>御膳房 · 菜品</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="topbar"></div>
+<div class="wrap" id="main"></div>
+<div id="footer"></div>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+document.getElementById('topbar').innerHTML = topbarHTML('<a class="nav-link" href="order.html">點菜</a>');
+document.getElementById('footer').innerHTML = footerHTML();
+
+const d = dishById(param('id'));
+const main = document.getElementById('main');
+
+if (!d) {
+  main.innerHTML = '<div class="page-head"><h2>查無此菜</h2></div>' +
+    '<div class="back-row"><a class="btn ghost" href="index.html">返回首頁</a></div>';
+} else {
+  const s = seasonById(d.season);
+  document.title = '御膳房 · ' + d.name;
+  const sections = d.sections.map(sec => {
+    const tag = sec.ordered ? 'ol' : 'ul';
+    const items = sec.items.map(it => '<li>' + it + '</li>').join('');
+    return '<section class="recipe-section"><h3>' + kangxiTitle(sec.title) + '</h3>' +
+      '<' + tag + '>' + items + '</' + tag + '></section>';
+  }).join('');
+  main.innerHTML =
+    '<div class="dish-hero">' + coverHTML(d) + '</div>' +
+    '<h2 class="dish-title">' + d.nameKx + '</h2>' +
+    '<p class="dish-brief">' + d.brief + '</p>' +
+    sections +
+    '<div class="back-row"><a class="btn ghost" href="season.html?s=' + s.id + '">返回' + s.nameKx + '</a></div>';
+}
+</script>
+</body>
+</html>

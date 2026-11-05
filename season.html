@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>御膳房 · 季节菜谱</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="topbar"></div>
+<div class="wrap">
+  <div class="page-head" id="head"></div>
+  <main class="dish-grid" id="grid"></main>
+  <div class="back-row"><a class="btn ghost" href="index.html">返回首頁</a></div>
+</div>
+<div id="footer"></div>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+document.getElementById('topbar').innerHTML = topbarHTML('<a class="nav-link" href="order.html">點菜</a>');
+document.getElementById('footer').innerHTML = footerHTML();
+
+const s = seasonById(param('s')) || SEASONS[0];
+document.title = '御膳房 · ' + s.name;
+document.getElementById('head').innerHTML =
+  '<h2 style="color:' + s.color + '">' + s.nameKx + '</h2>' +
+  '<p class="sub">' + s.sub + '</p>' +
+  '<img class="season-illo" src="' + s.illo + '" alt="">';
+
+document.getElementById('grid').innerHTML = dishesOfSeason(s.id).map(d =>
+  '<a class="dish-card" href="dish.html?id=' + d.id + '">' +
+    coverHTML(d) +
+    '<div class="info"><div class="name">' + d.name + '</div>' +
+    '<div class="brief">' + d.brief + '</div></div>' +
+  '</a>'
+).join('');
+</script>
+</body>
+</html>

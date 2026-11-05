@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#FCF9F0"/>
+  <!-- 圆月 -->
+  <circle cx="610" cy="140" r="72" fill="#EFCB8F"/>
+  <!-- 地面 -->
+  <path d="M0 500 Q200 462 400 492 T800 480 V600 H0 Z" fill="#EBDDC0"/>
+  <!-- 柿树枝干 -->
+  <g stroke="#6B5344" stroke-width="12" fill="none" stroke-linecap="round">
+    <path d="M70 600 C120 460 160 380 300 320"/>
+    <path d="M180 430 C240 380 320 360 420 350"/>
+    <path d="M300 320 C340 300 360 270 380 230"/>
+  </g>
+  <!-- 柿子 -->
+  <g>
+    <circle cx="430" cy="350" r="34" fill="#D98E3B"/>
+    <path d="M412 326 h36 l-8 -12 h-20 Z" fill="#5C7F47"/>
+    <circle cx="370" cy="215" r="30" fill="#D98E3B"/>
+    <path d="M354 194 h32 l-7 -11 h-18 Z" fill="#5C7F47"/>
+    <circle cx="500" cy="305" r="26" fill="#C98A3E"/>
+    <path d="M486 286 h28 l-6 -10 h-16 Z" fill="#5C7F47"/>
+  </g>
+  <!-- 秋叶 -->
+  <g fill="#C08A3E">
+    <path d="M560 380 q30 -22 58 -4 q-26 22 -58 4 Z" transform="rotate(20 589 378)"/>
+    <path d="M220 250 q26 -20 52 -4 q-24 20 -52 4 Z" transform="rotate(-14 246 246)"/>
+    <path d="M640 300 q24 -18 46 -2 q-22 18 -46 2 Z" transform="rotate(32 663 298)"/>
+  </g>
+  <g fill="#B03A2E" opacity=".85">
+    <path d="M150 320 q24 -18 46 -2 q-22 18 -46 2 Z" transform="rotate(-24 173 316)"/>
+  </g>
+  <!-- 飘落小叶 -->
+  <g fill="#D9A44A">
+    <path d="M520 470 q16 -12 30 -1 q-15 12 -30 1 Z"/>
+    <path d="M330 520 q16 -12 30 -1 q-15 12 -30 1 Z"/>
+    <path d="M690 430 q14 -10 26 -1 q-13 11 -26 1 Z"/>
+  </g>
+  <!-- 枯草点 -->
+  <g fill="#C9B285">
+    <circle cx="120" cy="545" r="6"/><circle cx="450" cy="555" r="7"/>
+    <circle cx="700" cy="535" r="6"/><circle cx="580" cy="565" r="5"/>
+  </g>
+</svg>

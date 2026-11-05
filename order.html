@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>御膳房 · 点菜</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="topbar"></div>
+<div class="wrap" style="padding-bottom: 30px;">
+  <div class="page-head">
+    <h2>點菜</h2>
+    <p class="sub">勾选想吃的菜，确认后生成今日菜单</p>
+  </div>
+  <main id="groups"></main>
+</div>
+
+<div class="order-bar">
+  <div class="order-bar-inner">
+    <span class="order-count">已选 <b id="count">0</b> 道菜</span>
+    <span class="date-row">日期 <input type="date" id="date"></span>
+    <button class="btn" id="confirm" disabled>確認</button>
+  </div>
+</div>
+
+<div class="modal-mask" id="modal">
+  <div class="menu-modal">
+    <img id="menu-img" alt="今日菜单">
+    <div class="menu-actions">
+      <a class="btn ghost" id="download" download="今日菜谱.png">保存圖片</a>
+      <button class="btn ghost" id="close">再選一次</button>
+    </div>
+    <p class="hint">手机上也可长按图片保存</p>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/wuhou.js"></script>
+<script src="js/common.js"></script>
+<script>
+document.getElementById('topbar').innerHTML = topbarHTML('<a class="nav-link" href="index.html">返回首頁</a>');
+
+/* ── 选菜 ── */
+const chosen = new Set();
+const groupsEl = document.getElementById('groups');
+groupsEl.innerHTML = SEASONS.map(s => {
+  const items = dishesOfSeason(s.id).map(d =>
+    '<div class="order-item" data-id="' + d.id + '">' +
+      '<span class="thumb"><img src="' + dishCover(d) + '" alt="" onerror="this.remove()">' + d.nameKx.charAt(0) + '</span>' +
+      '<span class="dname">' + d.name + '</span>' +
+      '<span class="tick">✓</span>' +
+    '</div>'
+  ).join('');
+  return '<div class="order-group">' +
+    '<div class="order-group-title" style="color:' + s.color + '">' + s.nameKx + '</div>' +
+    '<div class="order-grid">' + items + '</div></div>';
+}).join('');
+
+const countEl = document.getElementById('count');
+const confirmBtn = document.getElementById('confirm');
+
+groupsEl.addEventListener('click', e => {
+  const item = e.target.closest('.order-item');
+  if (!item) return;
+  const id = item.dataset.id;
+  if (chosen.has(id)) { chosen.delete(id); item.classList.remove('checked'); }
+  else { chosen.add(id); item.classList.add('checked'); }
+  countEl.textContent = chosen.size;
+  confirmBtn.disabled = chosen.size === 0;
+});
+
+/* 日期默认今天 */
+const dateInput = document.getElementById('date');
+(function () {
+  const t = new Date();
+  const p = n => String(n).padStart(2, '0');
+  dateInput.value = t.getFullYear() + '-' + p(t.getMonth() + 1) + '-' + p(t.getDate());
+})();
+
+/* ── 菜单图 ── */
+const INK = '#33312E', SOFT = '#6B655C', PAPER = '#F7F1E3', DEEP = '#EFE6D2',
+      CINNABAR = '#B03A2E', LINE = '#D8CDB4';
+
+function loadImage(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+async function drawMenu(dishes, date) {
+  const W = 900, cols = 2, cellW = W / cols, cellH = 400;
+  const rows = Math.ceil(dishes.length / cols);
+  const H = 320 + rows * cellH + 200;
+
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+
+  /* 纸底与双线框 */
+  ctx.fillStyle = PAPER;
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = CINNABAR; ctx.lineWidth = 3;
+  ctx.strokeRect(24, 24, W - 48, H - 48);
+  ctx.lineWidth = 1;
+  ctx.strokeRect(38, 38, W - 76, H - 76);
+
+  /* 等字体就绪再写字 */
+  await Promise.all([
+    document.fonts.load('72px Kangxi'), document.fonts.load('30px YueSong, serif')
+  ]);
+
+  /* 标题 */
+  ctx.fillStyle = CINNABAR;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = '72px Kangxi';
+  ctx.fillText('今 日 菜 譜', W / 2, 120);
+
+  /* 日期与物候 */
+  const dateStr = date.getFullYear() + ' 年 ' + (date.getMonth() + 1) + ' 月 ' + date.getDate() + ' 日';
+  ctx.fillStyle = INK;
+  ctx.font = '28px YueSong, serif';
+  ctx.fillText(dateStr, W / 2, 195);
+  ctx.fillStyle = SOFT;
+  ctx.font = '24px YueSong, serif';
+  ctx.fillText(wuhouLabel(date), W / 2, 240);
+
+  /* 分隔饰线 */
+  ctx.strokeStyle = CINNABAR; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(W / 2 - 130, 275); ctx.lineTo(W / 2 - 16, 275); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W / 2 + 16, 275); ctx.lineTo(W / 2 + 130, 275); ctx.stroke();
+  ctx.save();
+  ctx.translate(W / 2, 275); ctx.rotate(Math.PI / 4);
+  ctx.fillStyle = CINNABAR; ctx.fillRect(-5, -5, 10, 10);
+  ctx.restore();
+
+  /* 菜品格 */
+  const imgs = await Promise.all(dishes.map(d => loadImage(dishCover(d))));
+  dishes.forEach((d, i) => {
+    const cx = (i % cols) * cellW + cellW / 2;
+    const cy = 320 + Math.floor(i / cols) * cellH;
+    const size = 260, x = cx - size / 2, y = cy + 20;
+
+    if (imgs[i]) {
+      /* 居中裁方 */
+      const im = imgs[i], s = Math.min(im.width, im.height);
+      const sx = (im.width - s) / 2, sy = (im.height - s) / 2;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(x, y, size, size); ctx.clip();
+      ctx.drawImage(im, sx, sy, s, s, x, y, size, size);
+      ctx.restore();
+    } else {
+      /* 无封面：米白圆盘 + 首字 */
+      ctx.fillStyle = DEEP;
+      ctx.fillRect(x, y, size, size);
+      ctx.beginPath();
+      ctx.arc(cx, y + size / 2, size / 2 - 22, 0, Math.PI * 2);
+      ctx.fillStyle = PAPER; ctx.fill();
+      ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.stroke();
+      ctx.fillStyle = CINNABAR;
+      ctx.font = '92px Kangxi';
+      ctx.fillText(d.nameKx.charAt(0), cx, y + size / 2 + 6);
+    }
+    ctx.strokeStyle = LINE; ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, size, size);
+
+    ctx.fillStyle = INK;
+    ctx.font = '30px YueSong, serif';
+    ctx.fillText(d.name, cx, y + size + 48);
+  });
+
+  /* 落款 */
+  const fy = H - 170;
+  ctx.fillStyle = CINNABAR;
+  ctx.font = '22px YueSong, serif';
+  ctx.fillText('四时有序 · 不时不食', W / 2, fy);
+  /* 小印章 */
+  ctx.fillStyle = CINNABAR;
+  ctx.fillRect(W / 2 - 34, fy + 30, 68, 68);
+  ctx.fillStyle = PAPER;
+  ctx.font = '30px Kangxi';
+  ctx.fillText('御膳', W / 2, fy + 58);
+  ctx.fillText('房', W / 2, fy + 88);
+
+  return cv;
+}
+
+/* ── 确认生成 ── */
+const modal = document.getElementById('modal');
+confirmBtn.addEventListener('click', async () => {
+  const dishes = [...chosen].map(dishById);
+  const date = dateInput.value ? new Date(dateInput.value + 'T12:00:00') : new Date();
+  const cv = await drawMenu(dishes, date);
+  const url = cv.toDataURL('image/png');
+  document.getElementById('menu-img').src = url;
+  document.getElementById('download').href = url;
+  modal.classList.add('show');
+});
+document.getElementById('close').addEventListener('click', () => modal.classList.remove('show'));
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('show'); });
+</script>
+</body>
+</html>

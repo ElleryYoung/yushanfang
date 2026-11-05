@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>御膳房 · 四季家宴</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>御膳房</h1>
+    <p class="hero-sub">四时有序 · 不时不食</p>
+    <span class="seal">家宴</span>
+  </header>
+
+  <main class="seasons" id="seasons"></main>
+
+  <div class="order-entry">
+    <a class="btn" href="order.html">點菜</a>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+document.getElementById('footer').innerHTML = footerHTML();
+
+const box = document.getElementById('seasons');
+box.innerHTML = SEASONS.map(s => {
+  const n = dishesOfSeason(s.id).length;
+  return '<a class="season-card" href="season.html?s=' + s.id + '">' +
+    '<img src="' + s.illo + '" alt="' + s.name + '">' +
+    '<div class="season-meta">' +
+      '<div><div class="season-name" style="color:' + s.color + '">' + s.nameKx + '</div>' +
+      '<div class="season-sub">' + s.sub + '</div></div>' +
+      '<div class="season-count">' + n + ' 道菜</div>' +
+    '</div></a>';
+}).join('');
+</script>
+</body>
+</html>
