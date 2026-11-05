@@ -35,5 +35,5 @@ function topbarHTML(right) {
 }
 
 function footerHTML() {
-  return '<div class="footer">四时有序 · 不时不食</div>';
+  return '<div class="footer">四时有序 · 食饮有节</div>';
 }
